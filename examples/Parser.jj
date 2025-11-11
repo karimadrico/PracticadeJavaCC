@@ -64,13 +64,15 @@ SKIP :
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
-// La gramatica - ahora reconoce "PROGRAMA nombre."
+// La gramatica - programa con inicio y fin
 void programa():
 {}
 {
   <PROGRAMA> <IDENTIFICADOR> <PUNTO>
+  <INICIO>
+  <FIN> <PUNTO>
   <EOF>
   { 
-    System.out.println("Programa reconocido correctamente");
+    System.out.println("Programa completo reconocido");
   }
 }

@@ -56,6 +56,7 @@ TOKEN :
 | <LEE: "LEE" >
 | <MUEVE: "MUEVE" >
 | <A: "A" >
+| <SUMA: "SUMA" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -97,6 +98,10 @@ void sentencia():
   | <MUEVE> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
     {
       System.out.println("Encontrada sentencia MUEVE");
+    }
+  | <SUMA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+    {
+      System.out.println("Encontrada sentencia SUMA");
     }
   )
 }

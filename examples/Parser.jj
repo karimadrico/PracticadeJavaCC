@@ -13,6 +13,20 @@ import java.io.*;
 
 public class CobolCompiler {
 
+  // Variables para generar codigo intermedio
+  java.util.List<String> codigo = new java.util.ArrayList<>();
+  
+  void emitir(String instruccion) {
+    codigo.add(instruccion);
+  }
+  
+  void mostrarCodigo() {
+    System.out.println("=== Codigo intermedio generado ===");
+    for (String inst : codigo) {
+      System.out.println(inst);
+    }
+  }
+
   // Funcion principal - aqui empieza todo
   public static void main(String args[]) throws Exception {
     InputStream entrada = System.in;  // Por defecto lee del teclado
@@ -81,6 +95,7 @@ void programa():
   <EOF>
   { 
     System.out.println("Programa completo reconocido");
+    mostrarCodigo();
   }
 }
 
@@ -90,23 +105,31 @@ void sentencia():
 {
   ( <MUESTRA> <CADENA> <PUNTO>
     {
-      System.out.println("Encontrada sentencia MUESTRA");
+      emitir("metecad " + token.image);
+      emitir("print");
     }
   | <LEE> <IDENTIFICADOR> <PUNTO>
     {
-      System.out.println("Encontrada sentencia LEE");
+      emitir("lee " + token.image);
     }
   | <MUEVE> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
     {
-      System.out.println("Encontrada sentencia MUEVE");
+      emitir("mete " + getToken(1).image);
+      emitir("asigna " + token.image);
     }
   | <SUMA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
     {
-      System.out.println("Encontrada sentencia SUMA");
+      emitir("valord " + token.image);
+      emitir("mete " + getToken(1).image);
+      emitir("add");
+      emitir("asigna " + token.image);
     }
   | <RESTA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
     {
-      System.out.println("Encontrada sentencia RESTA");
+      emitir("valord " + token.image);
+      emitir("mete " + getToken(1).image);
+      emitir("sub");
+      emitir("asigna " + token.image);
     }
   )
 }

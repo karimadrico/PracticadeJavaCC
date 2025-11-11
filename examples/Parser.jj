@@ -54,6 +54,8 @@ TOKEN :
 | <FIN: "FIN" >
 | <MUESTRA: "MUESTRA" >
 | <LEE: "LEE" >
+| <MUEVE: "MUEVE" >
+| <A: "A" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios

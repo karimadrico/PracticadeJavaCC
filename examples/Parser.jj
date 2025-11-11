@@ -64,14 +64,13 @@ SKIP :
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
-// La gramatica 
-// Un programa puede ser un numero, una cadena o un identificador
+// La gramatica - ahora reconoce "PROGRAMA nombre."
 void programa():
 {}
 {
-  ( <NUMERO> | <CADENA> | <IDENTIFICADOR> )
+  <PROGRAMA> <IDENTIFICADOR> <PUNTO>
   <EOF>
   { 
-    System.out.println("He encontrado algo: " + token.image);
+    System.out.println("Programa reconocido correctamente");
   }
 }

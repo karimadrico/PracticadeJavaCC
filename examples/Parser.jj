@@ -38,10 +38,14 @@ TOKEN :
   <NUMERO: (["0"-"9"])+ >
 }
 
-// Ignoro espacios, tabs y saltos de linea
+// Ignoro espacios, tabs, saltos de linea y comentarios
 SKIP :
 {
   " " | "\t" | "\n" | "\r"
+| // Comentarios que empiezan con *> 
+  <"*>" (~["\n", "\r"])* ("\n" | "\r")? >
+| // Comentarios que empiezan con *|
+  <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
 // La gramatica 

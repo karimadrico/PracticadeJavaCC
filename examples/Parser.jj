@@ -53,6 +53,7 @@ TOKEN :
 | <INICIO: "INICIO" >
 | <FIN: "FIN" >
 | <MUESTRA: "MUESTRA" >
+| <LEE: "LEE" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios

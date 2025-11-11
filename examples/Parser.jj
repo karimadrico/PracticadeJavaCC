@@ -50,6 +50,8 @@ TOKEN :
 TOKEN :
 {
   <PROGRAMA: "PROGRAMA" >
+| <INICIO: "INICIO" >
+| <FIN: "FIN" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios

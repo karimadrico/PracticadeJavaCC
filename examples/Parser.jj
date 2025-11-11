@@ -1,0 +1,57 @@
+// Mi primer parser en JavaCC - empezando desde cero
+// Esto va a ser un mini-compilador para un lenguaje tipo COBOL
+
+options {
+  STATIC = false;           // Para poder crear varias instancias del parser
+  CACHE_TOKENS = true;      // Mejora el rendimiento 
+  OUTPUT_DIRECTORY = ".";   // Los archivos generados van en esta carpeta
+}
+
+PARSER_BEGIN(CobolCompiler)
+
+import java.io.*;
+
+public class CobolCompiler {
+
+  // Funcion principal - aqui empieza todo
+  public static void main(String args[]) throws Exception {
+    InputStream entrada = System.in;  // Por defecto lee del teclado
+    
+    // Si me pasan un archivo como parametro, leo de ahi
+    if (args.length > 0) {
+      entrada = new FileInputStream(args[0]);
+    }
+    
+    // Creo el analizador y empiezo a procesar
+    CobolCompiler miParser = new CobolCompiler(entrada);
+    miParser.programa();
+    System.out.println("¡El programa se analizo correctamente!");
+  }
+}
+
+PARSER_END(CobolCompiler)
+
+// Primero voy a definir los tokens basicos
+TOKEN :
+{
+  // Numeros enteros - solo digitos
+  <NUMERO: (["0"-"9"])+ >
+}
+
+// Ignoro espacios, tabs y saltos de linea
+SKIP :
+{
+  " " | "\t" | "\n" | "\r"
+}
+
+// La gramatica 
+// Un programa es simplemente un numero seguido del final del archivo
+void programa():
+{}
+{
+  <NUMERO>
+  <EOF>
+  { 
+    System.out.println("He encontrado un numero: " + getToken(0).image); 
+  }
+}

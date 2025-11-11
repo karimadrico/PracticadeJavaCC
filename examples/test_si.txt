@@ -1,0 +1,8 @@
+PROGRAMA CondicionalTest.
+INICIO
+MUEVE 5 A numero.
+SI numero ENTONCES
+MUESTRA "Es verdadero".
+FIN-SI.
+MUESTRA "Programa terminado".
+FIN.

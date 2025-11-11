@@ -72,6 +72,9 @@ TOKEN :
 | <A: "A" >
 | <SUMA: "SUMA" >
 | <RESTA: "RESTA" >
+| <SI: "SI" >
+| <ENTONCES: "ENTONCES" >
+| <FIN_SI: "FIN-SI" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -132,6 +135,13 @@ void sentencia():
       emitir("mete " + getToken(1).image);
       emitir("sub");
       emitir("asigna " + token.image);
+    }
+  | <SI> <IDENTIFICADOR> <ENTONCES> (sentencia())* <FIN_SI> <PUNTO>
+    {
+      emitir("valord " + getToken(1).image);
+      emitir("siciertovea LBLFIN");
+      // Aqui irian las sentencias del SI
+      emitir("LBLFIN:");
     }
   )
 }

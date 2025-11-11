@@ -40,6 +40,11 @@ TOKEN :
   <CADENA: "\"" (~["\"", "\n", "\r"])* "\"" >
 | // Identificadores - nombres de variables (empiezan con letra)
   <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9"])* >
+| // Puntuacion 
+  <PUNTO: "." >
+| <COMA: "," >
+| <ABRE_PAREN: "(" >
+| <CIERRA_PAREN: ")" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios

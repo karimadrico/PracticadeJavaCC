@@ -38,6 +38,8 @@ TOKEN :
   <NUMERO: (["0"-"9"])+ >
 | // Cadenas de texto entre comillas dobles
   <CADENA: "\"" (~["\"", "\n", "\r"])* "\"" >
+| // Identificadores - nombres de variables (empiezan con letra)
+  <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9"])* >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -51,11 +53,11 @@ SKIP :
 }
 
 // La gramatica 
-// Un programa puede ser un numero o una cadena seguido del final del archivo
+// Un programa puede ser un numero, una cadena o un identificador
 void programa():
 {}
 {
-  ( <NUMERO> | <CADENA> )
+  ( <NUMERO> | <CADENA> | <IDENTIFICADOR> )
   <EOF>
   { 
     System.out.println("He encontrado algo: " + token.image);

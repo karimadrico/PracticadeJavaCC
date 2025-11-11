@@ -57,6 +57,7 @@ TOKEN :
 | <MUEVE: "MUEVE" >
 | <A: "A" >
 | <SUMA: "SUMA" >
+| <RESTA: "RESTA" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -102,6 +103,10 @@ void sentencia():
   | <SUMA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
     {
       System.out.println("Encontrada sentencia SUMA");
+    }
+  | <RESTA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+    {
+      System.out.println("Encontrada sentencia RESTA");
     }
   )
 }

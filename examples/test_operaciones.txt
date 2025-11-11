@@ -1,0 +1,7 @@
+PROGRAMA Operaciones.
+INICIO
+MUEVE 20 A total.
+SUMA 5 A total.
+RESTA 3 A total.
+MUESTRA "Resultado final".
+FIN.

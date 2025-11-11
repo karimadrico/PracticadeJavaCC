@@ -1,0 +1,10 @@
+PROGRAMA TestComentarios.
+*> Este es un comentario normal
+INICIO
+      * Este es un comentario en columna 7
+MUEVE 10 A numero.
+      * Otro comentario columna 7  
+SUMA 5 A numero.
+*| Comentario con barra
+MUESTRA "Final".
+FIN.

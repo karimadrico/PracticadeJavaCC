@@ -82,6 +82,8 @@ SKIP :
   <"*>" (~["\n", "\r"])* ("\n" | "\r")? >
 | // Comentarios que empiezan con *|
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
+| // Comentarios en columna 7 (6 espacios + asterisco)
+  <"      *" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
 // La gramatica - programa con multiples sentencias

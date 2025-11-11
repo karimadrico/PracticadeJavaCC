@@ -36,6 +36,8 @@ TOKEN :
 {
   // Numeros enteros - solo digitos
   <NUMERO: (["0"-"9"])+ >
+| // Cadenas de texto entre comillas dobles
+  <CADENA: "\"" (~["\"", "\n", "\r"])* "\"" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -49,13 +51,13 @@ SKIP :
 }
 
 // La gramatica 
-// Un programa es simplemente un numero seguido del final del archivo
+// Un programa puede ser un numero o una cadena seguido del final del archivo
 void programa():
 {}
 {
-  <NUMERO>
+  ( <NUMERO> | <CADENA> )
   <EOF>
   { 
-    System.out.println("He encontrado un numero: " + getToken(0).image); 
+    System.out.println("He encontrado algo: " + token.image);
   }
 }

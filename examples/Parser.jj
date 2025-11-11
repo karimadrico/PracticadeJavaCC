@@ -65,15 +65,26 @@ SKIP :
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
-// La gramatica - programa con inicio y fin
+// La gramatica - programa con una sentencia simple
 void programa():
 {}
 {
   <PROGRAMA> <IDENTIFICADOR> <PUNTO>
   <INICIO>
+  sentencia()
   <FIN> <PUNTO>
   <EOF>
   { 
     System.out.println("Programa completo reconocido");
+  }
+}
+
+// Una sentencia simple
+void sentencia():
+{}
+{
+  <MUESTRA> <CADENA> <PUNTO>
+  {
+    System.out.println("Encontrada sentencia MUESTRA");
   }
 }

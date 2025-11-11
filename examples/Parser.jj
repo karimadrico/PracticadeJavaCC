@@ -52,6 +52,7 @@ TOKEN :
   <PROGRAMA: "PROGRAMA" >
 | <INICIO: "INICIO" >
 | <FIN: "FIN" >
+| <MUESTRA: "MUESTRA" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios

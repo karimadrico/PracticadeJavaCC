@@ -94,5 +94,9 @@ void sentencia():
     {
       System.out.println("Encontrada sentencia LEE");
     }
+  | <MUEVE> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+    {
+      System.out.println("Encontrada sentencia MUEVE");
+    }
   )
 }

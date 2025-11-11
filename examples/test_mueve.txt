@@ -1,0 +1,6 @@
+PROGRAMA Test.
+INICIO
+MUEVE 42 A numero.
+LEE nombre.
+MUESTRA "Resultado".
+FIN.

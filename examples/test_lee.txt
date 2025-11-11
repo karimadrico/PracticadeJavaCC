@@ -1,0 +1,4 @@
+PROGRAMA Prueba.
+INICIO
+LEE nombre.
+FIN.

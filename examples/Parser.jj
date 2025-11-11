@@ -84,8 +84,13 @@ void programa():
 void sentencia():
 {}
 {
-  <MUESTRA> <CADENA> <PUNTO>
-  {
-    System.out.println("Encontrada sentencia MUESTRA");
-  }
+  ( <MUESTRA> <CADENA> <PUNTO>
+    {
+      System.out.println("Encontrada sentencia MUESTRA");
+    }
+  | <LEE> <IDENTIFICADOR> <PUNTO>
+    {
+      System.out.println("Encontrada sentencia LEE");
+    }
+  )
 }

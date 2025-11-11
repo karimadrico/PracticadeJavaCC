@@ -41,7 +41,7 @@ TOKEN :
 | // Identificadores - nombres de variables (empiezan con letra)
   <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9"])* >
 | // Puntuacion 
-| <PUNTO: "." >
+  <PUNTO: "." >
 | <COMA: "," >
 | <ABRE_PAREN: "(" >
 | <CIERRA_PAREN: ")" >

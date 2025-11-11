@@ -66,13 +66,13 @@ SKIP :
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
-// La gramatica - programa con una sentencia simple
+// La gramatica - programa con multiples sentencias
 void programa():
 {}
 {
   <PROGRAMA> <IDENTIFICADOR> <PUNTO>
   <INICIO>
-  sentencia()
+  (sentencia())*
   <FIN> <PUNTO>
   <EOF>
   { 

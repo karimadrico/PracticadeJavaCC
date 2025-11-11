@@ -1,0 +1,7 @@
+PROGRAMA Completo.
+INICIO
+LEE nombre.
+MUESTRA "Hola".
+LEE edad.
+MUESTRA "Adios".
+FIN.

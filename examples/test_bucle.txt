@@ -1,0 +1,9 @@
+PROGRAMA BucleTest.
+INICIO
+MUEVE 0 A contador.
+EJECUTA
+SUMA 1 A contador.
+MUESTRA "Iteracion".
+FIN-EJECUTA.
+MUESTRA "Bucle terminado".
+FIN.

@@ -75,6 +75,8 @@ TOKEN :
 | <SI: "SI" >
 | <ENTONCES: "ENTONCES" >
 | <FIN_SI: "FIN-SI" >
+| <EJECUTA: "EJECUTA" >
+| <FIN_EJECUTA: "FIN-EJECUTA" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -142,6 +144,12 @@ void sentencia():
       emitir("siciertovea LBLFIN");
       // Aqui irian las sentencias del SI
       emitir("LBLFIN:");
+    }
+  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <PUNTO>
+    {
+      emitir("LBLBUCLE:");
+      // Aqui van las sentencias del bucle
+      emitir("vea LBLBUCLE");
     }
   )
 }

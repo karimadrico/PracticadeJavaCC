@@ -160,12 +160,17 @@ void sentencia():
       // Las sentencias del SI van aqui
       emitir(lblFin + ":");
     }
-  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <PUNTO>
+  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <HASTA_QUE> condicion_NT() <PUNTO>
     {
       String lblInicio = nuevaEtiqueta();
+      String lblFin = nuevaEtiqueta();
       emitir(lblInicio + ":");
       // Las sentencias del bucle van aqui
+      // Aqui se evalua la condicion
+      emitir("not");
+      emitir("siciertovea " + lblFin);
       emitir("vea " + lblInicio);
+      emitir(lblFin + ":");
     }
   | <CALCULA> <IDENTIFICADOR> <IGUAL_ASIGN> expresion_NT() <FIN_CALCULA> <PUNTO>
     {
@@ -183,5 +188,17 @@ void expresion_NT():
   <NUMERO>
   {
     emitir("mete " + token.image);
+  }
+}
+
+// Condicion simple
+void condicion_NT():
+{}
+{
+  <IDENTIFICADOR> <ES> <IGUAL> <A> <NUMERO>
+  {
+    emitir("valord " + getToken(0).image);
+    emitir("mete " + getToken(4).image);
+    emitir("xor");
   }
 }

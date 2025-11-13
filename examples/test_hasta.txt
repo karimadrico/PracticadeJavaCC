@@ -1,0 +1,10 @@
+PROGRAMA BucleHasta.
+INICIO
+MUEVE 5 A contador.
+EJECUTA
+RESTA 1 A contador.
+MUESTRA "Iterando".
+FIN-EJECUTA
+HASTA-QUE contador ES IGUAL A 0.
+MUESTRA "Bucle terminado".
+FIN.

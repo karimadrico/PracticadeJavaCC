@@ -1,0 +1,26 @@
+PROGRAMA TestCondiciones.
+INICIO
+MUEVE 10 A numero.
+
+*> Probando comparacion igual
+SI numero ES IGUAL A 10
+MUESTRA "Es igual a 10".
+FIN-SI.
+
+*> Probando comparacion mayor que
+SI numero ES MAYOR QUE 5
+MUESTRA "Es mayor que 5".
+FIN-SI.
+
+*> Probando comparacion menor que  
+SI numero ES MENOR QUE 20
+MUESTRA "Es menor que 20".
+FIN-SI.
+
+*> Probando con variables en lugar de numeros
+MUEVE 15 A limite.
+SI numero ES MENOR QUE limite
+MUESTRA "numero es menor que limite".
+FIN-SI.
+
+FIN.

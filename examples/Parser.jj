@@ -145,6 +145,7 @@ TOKEN :
 | <ES: "ES" >
 | <IGUAL: "IGUAL" >
 | <MAYOR: "MAYOR" >
+| <MENOR: "MENOR" >        // Añadido MENOR para comparaciones
 | <QUE: "QUE" >
 
   // Para expresiones
@@ -302,14 +303,32 @@ void expresion_NT():
   )
 }
 
-// Condicion simple
+// Condicion - ahora con mas tipos de comparacion
 void condicion_NT():
 {}
 {
-  <IDENTIFICADOR> <ES> <IGUAL> <A> <NUMERO>
-  {
-    emitir("valord " + getToken(0).image);
-    emitir("mete " + getToken(4).image);
-    emitir("xor");
-  }
+  ( <IDENTIFICADOR> <ES> <IGUAL> <A> expresion_NT()
+    {
+      // Compara si variable es igual a expresion
+      // Ya tengo el valor de la expresion en la pila
+      emitir("valord " + getToken(0).image);
+      emitir("swap");  // Intercambio para tener orden correcto
+      emitir("xor");   // XOR da 0 si son iguales (verdadero)
+    }
+  | <IDENTIFICADOR> <ES> <MAYOR> <QUE> expresion_NT()
+    {
+      // Compara si variable es mayor que expresion
+      // En maquina de pila: mayor se implementa como (a > b)
+      emitir("valord " + getToken(0).image);
+      emitir("swap");
+      emitir("gt");    // "gt" = greater than (mayor que)
+    }
+  | <IDENTIFICADOR> <ES> <MENOR> <QUE> expresion_NT()
+    {
+      // Compara si variable es menor que expresion
+      emitir("valord " + getToken(0).image);
+      emitir("swap");
+      emitir("lt");    // "lt" = less than (menor que)
+    }
+  )
 }

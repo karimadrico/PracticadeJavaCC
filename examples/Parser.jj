@@ -151,6 +151,9 @@ TOKEN :
 | <CALCULA: "CALCULA" >
 | <FIN_CALCULA: "FIN-CALCULA" >
 | <IGUAL_ASIGN: "=" >     // Signo igual para asignaciones
+
+  // DANDO 
+| <DANDO: "DANDO" >       // Palabra clave para mostrar expresiones
 }
 
 /*
@@ -270,6 +273,13 @@ void sentencia():
       emitir("valori " + getToken(1).image);
       emitir("swap");
       emitir("asigna");
+    }
+  | <DANDO> expresion_NT() <PUNTO>
+    {
+      // DANDO muestra el resultado de una expresion en pantalla
+      // Es como MUESTRA pero para expresiones numericas
+      // La expresion ya queda en la pila, solo hay que imprimirla
+      emitir("print");
     }
   )
 }

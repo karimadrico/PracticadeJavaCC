@@ -1,0 +1,6 @@
+PROGRAMA TestDando.
+INICIO
+MUEVE 10 A numero.
+DANDO 25.
+DANDO numero.
+FIN.

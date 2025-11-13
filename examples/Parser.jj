@@ -152,12 +152,16 @@ void sentencia():
       emitir("sub");
       emitir("asigna " + token.image);
     }
-  | <SI> <IDENTIFICADOR> <ENTONCES> (sentencia())* <FIN_SI> <PUNTO>
+  | <SI> <IDENTIFICADOR> <ENTONCES> (sentencia())* (<SINO> (sentencia())*)? <FIN_SI> <PUNTO>
     {
+      String lblSino = nuevaEtiqueta();
       String lblFin = nuevaEtiqueta();
       emitir("valord " + getToken(1).image);
-      emitir("siciertovea " + lblFin);
-      // Las sentencias del SI van aqui
+      emitir("siciertovea " + lblSino);
+      // Sentencias del ENTONCES
+      emitir("vea " + lblFin);
+      emitir(lblSino + ":");
+      // Sentencias del SINO (si las hay)
       emitir(lblFin + ":");
     }
   | <EJECUTA> (sentencia())* <FIN_EJECUTA> <HASTA_QUE> condicion_NT() <PUNTO>

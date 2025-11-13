@@ -82,6 +82,15 @@ TOKEN :
 | <FIN_SI: "FIN-SI" >
 | <EJECUTA: "EJECUTA" >
 | <FIN_EJECUTA: "FIN-EJECUTA" >
+| <HASTA_QUE: "HASTA-QUE" >
+| <ES: "ES" >
+| <IGUAL: "IGUAL" >
+| <MAYOR: "MAYOR" >
+| <QUE: "QUE" >
+| <CALCULA: "CALCULA" >
+| <FIN_CALCULA: "FIN-CALCULA" >
+| <SINO: "SINO" >
+| <IGUAL_ASIGN: "=" >
 }
 
 // Ignoro espacios, tabs, saltos de linea y comentarios
@@ -158,5 +167,21 @@ void sentencia():
       // Las sentencias del bucle van aqui
       emitir("vea " + lblInicio);
     }
+  | <CALCULA> <IDENTIFICADOR> <IGUAL_ASIGN> expresion_NT() <FIN_CALCULA> <PUNTO>
+    {
+      emitir("valori " + getToken(1).image);
+      emitir("swap");
+      emitir("asigna");
+    }
   )
+}
+
+// Expresion aritmetica simple
+void expresion_NT():
+{}
+{
+  <NUMERO>
+  {
+    emitir("mete " + token.image);
+  }
 }

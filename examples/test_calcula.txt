@@ -1,0 +1,5 @@
+PROGRAMA TestCalcula.
+INICIO
+CALCULA VAR = 125 FIN-CALCULA.
+MUESTRA "Variable calculada".
+FIN.

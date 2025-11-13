@@ -15,6 +15,11 @@ public class CobolCompiler {
 
   // Variables para generar codigo intermedio
   java.util.List<String> codigo = new java.util.ArrayList<>();
+  int contadorEtiquetas = 0;
+  
+  String nuevaEtiqueta() {
+    return "LBL" + (contadorEtiquetas++);
+  }
   
   void emitir(String instruccion) {
     codigo.add(instruccion);
@@ -140,16 +145,18 @@ void sentencia():
     }
   | <SI> <IDENTIFICADOR> <ENTONCES> (sentencia())* <FIN_SI> <PUNTO>
     {
+      String lblFin = nuevaEtiqueta();
       emitir("valord " + getToken(1).image);
-      emitir("siciertovea LBLFIN");
-      // Aqui irian las sentencias del SI
-      emitir("LBLFIN:");
+      emitir("siciertovea " + lblFin);
+      // Las sentencias del SI van aqui
+      emitir(lblFin + ":");
     }
   | <EJECUTA> (sentencia())* <FIN_EJECUTA> <PUNTO>
     {
-      emitir("LBLBUCLE:");
-      // Aqui van las sentencias del bucle
-      emitir("vea LBLBUCLE");
+      String lblInicio = nuevaEtiqueta();
+      emitir(lblInicio + ":");
+      // Las sentencias del bucle van aqui
+      emitir("vea " + lblInicio);
     }
   )
 }

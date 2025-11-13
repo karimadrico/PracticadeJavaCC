@@ -284,14 +284,22 @@ void sentencia():
   )
 }
 
-// Expresion aritmetica simple
+// Expresion aritmetica simple - ahora acepta numeros Y variables
 void expresion_NT():
 {}
 {
-  <NUMERO>
-  {
-    emitir("mete " + token.image);
-  }
+  ( <NUMERO>
+    {
+      // Si es un numero, lo meto directamente en la pila
+      emitir("mete " + token.image);
+    }
+  | <IDENTIFICADOR>
+    {
+      // Si es una variable, cargo su valor en la pila
+      // valord significa "valor de la variable"
+      emitir("valord " + token.image);
+    }
+  )
 }
 
 // Condicion simple

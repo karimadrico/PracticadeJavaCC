@@ -1,6 +1,13 @@
 PROGRAMA TestDando.
 INICIO
-MUEVE 10 A numero.
+*> Probando DANDO con numeros directos
 DANDO 25.
+
+*> Probando DANDO con variables
+MUEVE 10 A numero.
 DANDO numero.
+
+*> Probando combinacion CALCULA y DANDO
+CALCULA resultado = 42 FIN-CALCULA.
+DANDO resultado.
 FIN.

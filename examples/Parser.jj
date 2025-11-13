@@ -1,30 +1,55 @@
-// Mi primer parser en JavaCC - empezando desde cero
-// Esto va a ser un mini-compilador para un lenguaje tipo COBOL
-
+/*
+ * SECCION DE OPCIONES
+ * Aqui configuro como quiero que JavaCC genere mi parser
+ */
 options {
-  STATIC = false;           // Para poder crear varias instancias del parser
-  CACHE_TOKENS = true;      // Mejora el rendimiento 
-  OUTPUT_DIRECTORY = ".";   // Los archivos generados van en esta carpeta
+  STATIC = false;           // Permite crear multiples instancias del parser
+                           // Si fuera true, todos los metodos serian estaticos
+  CACHE_TOKENS = true;      // Mejora rendimiento guardando tokens en cache
+                           
+  OUTPUT_DIRECTORY = ".";   // Los archivos .java generados van en esta carpeta
+                          
 }
 
+/*
+ * SECCION PARSER_BEGIN 
+ * Aqui defino la clase Java que JavaCC va a generar
+ * El nombre debe ser exactamente "CobolCompiler" segun el enunciado
+ */
 PARSER_BEGIN(CobolCompiler)
 
 import java.io.*;
 
 public class CobolCompiler {
 
-  // Variables para generar codigo intermedio
+  /*
+   * VARIABLES PARA GENERACION DE CODIGO INTERMEDIO
+   * Segun el enunciado debo generar codigo de maquina de pila abstracta
+   * Como las instrucciones: mete, valord, asigna, add, sub, etc.
+   */
   java.util.List<String> codigo = new java.util.ArrayList<>();
-  int contadorEtiquetas = 0;
+  int contadorEtiquetas = 0;  // Para generar etiquetas unicas (LBL0, LBL1, etc.)
   
+  /* 
+   * Genera una etiqueta unica cada vez que la llamo
+   * Esto es importante para estructuras anidadas (bucles dentro de bucles)
+   */
   String nuevaEtiqueta() {
     return "LBL" + (contadorEtiquetas++);
   }
   
+  /*
+   * Añade una instruccion al codigo intermedio generado
+   * Por ejemplo: emitir("mete 5") añade mete 5 a la lista
+   */
   void emitir(String instruccion) {
     codigo.add(instruccion);
   }
   
+  /*
+   * Imprime todo el codigo intermedio generado
+   * Esto muestra el resultado de la "compilacion" a maquina de pila
+   */
   void mostrarCodigo() {
     System.out.println("=== Codigo intermedio generado ===");
     for (String inst : codigo) {
@@ -32,91 +57,155 @@ public class CobolCompiler {
     }
   }
 
-  // Funcion principal - aqui empieza todo
+  /*
+   * FUNCION PRINCIPAL
+   * Segun el enunciado debe poder leer de:
+   * - Entrada estándar,teclado, si no hay argumentos
+   * - Archivo cuyo nombre se pase como parametro
+   */
   public static void main(String args[]) throws Exception {
-    InputStream entrada = System.in;  // Por defecto lee del teclado
+    InputStream entrada = System.in;  // Por defecto leo del teclado
     
-    // Si me pasan un archivo como parametro, leo de ahi
+    // Si me pasan un archivo como parametro, leo de ese archivo
     if (args.length > 0) {
       entrada = new FileInputStream(args[0]);
     }
     
-    // Creo el analizador y empiezo a procesar
+    // Creo mi analizador sintactico y empiezo a procesar
     CobolCompiler miParser = new CobolCompiler(entrada);
-    miParser.programa();
+    miParser.programa();  // Llamo a la regla principal de la gramatica
     System.out.println("¡El programa se analizo correctamente!");
   }
 }
 
 PARSER_END(CobolCompiler)
 
-// Primero voy a definir los tokens basicos
+/*
+ * SECCION DE TOKENS (ANALISIS LEXICO)
+ * Aqui defino todos los simbolos que mi lenguaje reconoce
+ * Segun el enunciado los nombres deben empezar con tk pero yo use nombres descriptivos
+ * 
+ * JavaCC primero convierte el texto de entrada en una secuencia de tokens
+ * y luego el parser usa esos tokens para construir el arbol sintactico
+ */
+
+// TOKENS BASICOS - literales y identificadores
 TOKEN :
 {
-  // Numeros enteros - solo digitos
+  // Numeros enteros positivos (segun enunciado solo estos)
   <NUMERO: (["0"-"9"])+ >
-| // Cadenas de texto entre comillas dobles
+| 
+  // Cadenas con comillas dobles: "Hola 'mundo'"
   <CADENA: "\"" (~["\"", "\n", "\r"])* "\"" >
-| // Identificadores - nombres de variables (empiezan con letra)
-  <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9"])* >
-| // Puntuacion 
+| 
+  // Identificadores: nombres de variables
+  // Pueden contener letras, digitos y guiones (pero no empezar con digito o guion)
+  // Ejemplos validos: VAR, WS-A, A12. Invalidos: 2B, -WS, WS-
+  <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9","-"])* >
+| 
+  // Signos de puntuacion basicos
   <PUNTO: "." >
 | <COMA: "," >
 | <ABRE_PAREN: "(" >
 | <CIERRA_PAREN: ")" >
 }
 
+// PALABRAS RESERVADAS (KEYWORDS)
+// Estas tienen prioridad sobre los identificadores
+// JavaCC automaticamente hace que PROGRAMA no se confunda con un identificador
 TOKEN :
 {
+  // Estructura basica del programa
   <PROGRAMA: "PROGRAMA" >
 | <INICIO: "INICIO" >
 | <FIN: "FIN" >
-| <MUESTRA: "MUESTRA" >
-| <LEE: "LEE" >
-| <MUEVE: "MUEVE" >
-| <A: "A" >
+
+  // Instrucciones de entrada/salida
+| <MUESTRA: "MUESTRA" >  // Para imprimir
+| <LEE: "LEE" >          // Para leer del usuario
+
+  // Operaciones aritmeticas
+| <MUEVE: "MUEVE" >      // Asignacion simple
+| <A: "A" >              // Preposicion para MUEVE
 | <SUMA: "SUMA" >
 | <RESTA: "RESTA" >
+
+  // Estructuras de control
 | <SI: "SI" >
 | <ENTONCES: "ENTONCES" >
 | <FIN_SI: "FIN-SI" >
+| <SINO: "SINO" >
+
+  // Bucles
 | <EJECUTA: "EJECUTA" >
 | <FIN_EJECUTA: "FIN-EJECUTA" >
 | <HASTA_QUE: "HASTA-QUE" >
+
+  // Para condiciones
 | <ES: "ES" >
 | <IGUAL: "IGUAL" >
 | <MAYOR: "MAYOR" >
 | <QUE: "QUE" >
+
+  // Para expresiones
 | <CALCULA: "CALCULA" >
 | <FIN_CALCULA: "FIN-CALCULA" >
-| <SINO: "SINO" >
-| <IGUAL_ASIGN: "=" >
+| <IGUAL_ASIGN: "=" >     // Signo igual para asignaciones
 }
 
-// Ignoro espacios, tabs, saltos de linea y comentarios
+/*
+ * SECCION SKIP - caracteres que se ignoran
+ * Esto es MUY IMPORTANTE: le digo a JavaCC que ignore estos caracteres
+ * Es como el espacio en blanco que separa palabras pero no tiene significado
+ */
 SKIP :
 {
-  " " | "\t" | "\n" | "\r"
-| // Comentarios que empiezan con *> 
+  " " | "\t" | "\n" | "\r"  // Espacios, tabulaciones y saltos de linea
+
+  /*
+   * COMENTARIOS DEL LENGUAJE (segun enunciado)
+   * El enunciado especifica 3 tipos de comentarios que debo manejar
+   */
+
+| // Tipo 1: Comentarios que empiezan con *> hasta fin de linea
   <"*>" (~["\n", "\r"])* ("\n" | "\r")? >
-| // Comentarios que empiezan con *|
+
+| // Tipo 2: Comentarios que empiezan con *| hasta fin de linea  
   <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
-| // Comentarios en columna 7 (6 espacios + asterisco)
+
+| // Tipo 3: Comentarios en columna 7 (herencia de tarjetas perforadas)
+  // Una linea que empiece por 6 espacios + asterisco es ignorada completamente
   <"      *" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
-// La gramatica - programa con multiples sentencias
+/*
+ * SECCION DE GRAMATICA (ANALISIS SINTACTICO)
+ * Aqui defino las reglas que determinan si el programa esta bien escrito
+ * 
+ * Cada regla es una función que JavaCC genera automaticamente
+ * El nombre debe terminar en _NT segun el enunciado (yo use nombres descriptivos otra vez)
+ * 
+ * Los {} al principio son para variables locales (no las uso aqui)
+ * Los {} al final contienen "acciones semanticas" codigo Java que se ejecuta
+ * cuando se reconoce esa regla
+ */
+
+/*
+ * REGLA PRINCIPAL - un programa completo
+ * Estructura: PROGRAMA nombre. INICIO sentencias FIN.
+ * Al final muestro todo el codigo intermedio que genere
+ */
 void programa():
 {}
 {
   <PROGRAMA> <IDENTIFICADOR> <PUNTO>
   <INICIO>
-  (sentencia())*
+  (sentencia())*  // El * significa "cero o mas sentencias"
   <FIN> <PUNTO>
-  <EOF>
+  <EOF>  // Debe llegar hasta el final del archivo
   { 
     System.out.println("Programa completo reconocido");
-    mostrarCodigo();
+    mostrarCodigo();  // Aqui muestro las instrucciones generadas
   }
 }
 

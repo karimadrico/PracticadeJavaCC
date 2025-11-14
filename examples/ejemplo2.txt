@@ -1,0 +1,15 @@
+PROGRAMA 2.
+*> Programa de prueba con operaciones aritméticas
+INICIO
+  MUEVE 10 A numero.
+  MUEVE 5 A otro.
+  SUMA numero A resultado.
+  SUMA otro A resultado.
+  MUESTRA "El resultado es: ".
+  DANDO resultado.
+  SI resultado ES MAYOR QUE 15 ENTONCES
+    MUESTRA "Resultado mayor que 15".
+  SINO
+    MUESTRA "Resultado menor o igual a 15".
+  FIN-SI.
+FIN.

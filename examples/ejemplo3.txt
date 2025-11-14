@@ -1,0 +1,20 @@
+PROGRAMA 3.
+*| Comentario con barra vertical
+      * Comentario en columna 7
+*> Comentario normal
+INICIO
+  DANDO "Hola mundo!".
+  MUEVE 1 A contador.
+  EJECUTA
+    MUESTRA "Contador: ".
+    DANDO contador.
+    SUMA 1 A contador.
+  FIN-EJECUTA
+  HASTA-QUE contador ES MAYOR QUE 3.
+  LEE entrada.
+  SI entrada ES MENOR QUE 10 ENTONCES
+    MUESTRA "Entrada pequeña".
+  SINO
+    MUESTRA "Entrada grande".
+  FIN-SI.
+FIN.

@@ -1,0 +1,21 @@
+PROGRAMA 1.
+      * Comentario COBOL de asterisco en columna 7
+INICIO  *> otro comentario
+  MUEVE 5 A VAR.        *> La variable VAR toma el valor de 5
+  LEE V.                *> Leer un valor para la variable V        
+  EJECUTA               *> bucle para decrementar var              
+    RESTA 2 A VAR.
+  FIN-EJECUTA
+  HASTA-QUE VAR ES IGUAL A 0.
+  SI VAR ES MAYOR QUE 0 ENTONCES *> Condicional                             
+      * Rama ENTONCES
+        RESTA 1 A V.
+        MUESTRA "V-1 es: ".
+        MUESTRA V.
+  SINO
+      * Rama SINO
+        SUMA 10 A VAR.
+        MUESTRA "VAR + 10 es: ".
+        MUESTRA VAR.
+  FIN-SI.
+FIN.

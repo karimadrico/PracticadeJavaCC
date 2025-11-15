@@ -1,9 +1,0 @@
-PROGRAMA TestSino.
-INICIO
-MUEVE 0 A valor.
-SI valor ENTONCES
-MUESTRA "Valor es verdadero".
-SINO
-MUESTRA "Valor es falso".
-FIN-SI.
-FIN.

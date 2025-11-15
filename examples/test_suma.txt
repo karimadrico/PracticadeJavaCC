@@ -1,6 +1,0 @@
-PROGRAMA Calc.
-INICIO
-MUEVE 10 A x.
-SUMA 5 A x.
-MUESTRA "Resultado".
-FIN.

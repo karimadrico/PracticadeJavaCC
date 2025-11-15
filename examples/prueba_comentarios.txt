@@ -1,4 +1,0 @@
-*> Este es un comentario tipo 1
-*| Este es un comentario tipo 2
-123
-*> Otro comentario al final

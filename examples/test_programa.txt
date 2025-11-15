@@ -1,4 +1,0 @@
-PROGRAMA MiProg.
-INICIO
-MUESTRA "Hola mundo".
-FIN.

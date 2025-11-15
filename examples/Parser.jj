@@ -5,10 +5,6 @@
 options {
   STATIC = false;           // Permite crear multiples instancias del parser
                            // Si fuera true, todos los metodos serian estaticos
-  CACHE_TOKENS = true;      // Mejora rendimiento guardando tokens en cache
-                           
-  OUTPUT_DIRECTORY = ".";   // Los archivos .java generados van en esta carpeta
-                          
 }
 
 /*
@@ -83,8 +79,6 @@ PARSER_END(CobolCompiler)
 /*
  * SECCION DE TOKENS (ANALISIS LEXICO)
  * Aqui defino todos los simbolos que mi lenguaje reconoce
- * Segun el enunciado los nombres deben empezar con tk pero yo use nombres descriptivos
- * 
  * JavaCC primero convierte el texto de entrada en una secuencia de tokens
  * y luego el parser usa esos tokens para construir el arbol sintactico
  */
@@ -187,7 +181,6 @@ SKIP :
  * Aqui defino las reglas que determinan si el programa esta bien escrito
  * 
  * Cada regla es una función que JavaCC genera automaticamente
- * El nombre debe terminar en _NT segun el enunciado (yo use nombres descriptivos otra vez)
  * 
  * Los {} al principio son para variables locales (no las uso aqui)
  * Los {} al final contienen "acciones semanticas" codigo Java que se ejecuta
@@ -257,7 +250,7 @@ void sentencia():
       // Sentencias del SINO (si las hay)
       emitir(lblFin + ":");
     }
-  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <HASTA_QUE> condicion_NT() <PUNTO>
+  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <HASTA_QUE> condicion() <PUNTO>
     {
       String lblInicio = nuevaEtiqueta();
       String lblFin = nuevaEtiqueta();
@@ -269,24 +262,24 @@ void sentencia():
       emitir("vea " + lblInicio);
       emitir(lblFin + ":");
     }
-  | <CALCULA> <IDENTIFICADOR> <IGUAL_ASIGN> expresion_NT() <FIN_CALCULA> <PUNTO>
+  | <CALCULA> <IDENTIFICADOR> <IGUAL_ASIGN> expresion() <FIN_CALCULA> <PUNTO>
     {
       emitir("valori " + getToken(1).image);
       emitir("swap");
       emitir("asigna");
     }
-  | <DANDO> expresion_NT() <PUNTO>
+  | <DANDO> expresion() <PUNTO>
     {
-      // DANDO muestra el resultado de una expresion en pantalla
-      // Es como MUESTRA pero para expresiones numericas
-      // La expresion ya queda en la pila, solo hay que imprimirla
+      // DANDO lo utilizo cuando quiero sacar por pantalla el valor calculado
+      // de una expresion numerica (lo uso bastante en las pruebas que suman y restan)
+      // La expresion deja su resultado en la pila, asi que basta con imprimirla
       emitir("print");
     }
   )
 }
 
 // Expresion aritmetica simple - ahora acepta numeros Y variables
-void expresion_NT():
+void expresion():
 {}
 {
   ( <NUMERO>
@@ -297,17 +290,17 @@ void expresion_NT():
   | <IDENTIFICADOR>
     {
       // Si es una variable, cargo su valor en la pila
-      // valord significa "valor de la variable"
+      // valord es la instruccion que defini para "valor de la variable"
       emitir("valord " + token.image);
     }
   )
 }
 
 // Condicion - ahora con mas tipos de comparacion
-void condicion_NT():
+void condicion():
 {}
 {
-  ( <IDENTIFICADOR> <ES> <IGUAL> <A> expresion_NT()
+  ( <IDENTIFICADOR> <ES> <IGUAL> <A> expresion()
     {
       // Compara si variable es igual a expresion
       // Ya tengo el valor de la expresion en la pila
@@ -315,15 +308,15 @@ void condicion_NT():
       emitir("swap");  // Intercambio para tener orden correcto
       emitir("xor");   // XOR da 0 si son iguales (verdadero)
     }
-  | <IDENTIFICADOR> <ES> <MAYOR> <QUE> expresion_NT()
+  | <IDENTIFICADOR> <ES> <MAYOR> <QUE> expresion()
     {
       // Compara si variable es mayor que expresion
-      // En maquina de pila: mayor se implementa como (a > b)
+      // En la maquina de pila uso gt (greater than)
       emitir("valord " + getToken(0).image);
       emitir("swap");
       emitir("gt");    // "gt" = greater than (mayor que)
     }
-  | <IDENTIFICADOR> <ES> <MENOR> <QUE> expresion_NT()
+  | <IDENTIFICADOR> <ES> <MENOR> <QUE> expresion()
     {
       // Compara si variable es menor que expresion
       emitir("valord " + getToken(0).image);

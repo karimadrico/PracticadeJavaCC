@@ -72,6 +72,7 @@ mostrarCodigo();
       case MUESTRA:
       case SUMA:
       case RESTA:
+      case DANDO:
       case CALCULA:
       case SI:
       case EJECUTA:{
@@ -89,7 +90,8 @@ mostrarCodigo();
   final public void sentencia() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LEE:
-    case MUESTRA:{
+    case MUESTRA:
+    case DANDO:{
       instruccionIO();
       break;
       }
@@ -129,6 +131,14 @@ emitir("print " + getToken(0).image);
       jj_consume_token(IDENTIFICADOR);
       jj_consume_token(PUNTO);
 emitir("lee " + getToken(1).image);
+      break;
+      }
+    case DANDO:{
+      jj_consume_token(DANDO);
+      jj_consume_token(IDENTIFICADOR);
+      jj_consume_token(PUNTO);
+emitir("valord " + getToken(1).image);
+      emitir("print " + getToken(1).image);
       break;
       }
     default:
@@ -455,7 +465,7 @@ emitir("sub");
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x0,0x448f10,0x448f10,0x300,0x0,0x0,0x8c10,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x70000000,};
+	   jj_la1_0 = new int[] {0x0,0x44cf10,0x44cf10,0x4300,0x0,0x0,0x8c10,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x70000000,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x9,0x0,0x0,0x0,0x20,0xf,0x0,0x9,0x180,0x180,0x600,0x600,0x809,0x0,0x0,};

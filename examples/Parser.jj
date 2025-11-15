@@ -157,10 +157,9 @@ void instruccionIO():
     {
       emitir("lee " + getToken(1).image);
     }
-  | <DANDO> <IDENTIFICADOR> <PUNTO>
+  | <DANDO> listaLiterales() <PUNTO>
     {
-      emitir("valord " + getToken(1).image);
-      emitir("print " + getToken(1).image);
+      emitir("print " + getToken(0).image);
     }
   )
 }

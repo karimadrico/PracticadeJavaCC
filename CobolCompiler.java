@@ -135,10 +135,9 @@ emitir("lee " + getToken(1).image);
       }
     case DANDO:{
       jj_consume_token(DANDO);
-      jj_consume_token(IDENTIFICADOR);
+      listaLiterales();
       jj_consume_token(PUNTO);
-emitir("valord " + getToken(1).image);
-      emitir("print " + getToken(1).image);
+emitir("print " + getToken(0).image);
       break;
       }
     default:

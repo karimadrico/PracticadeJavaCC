@@ -1,16 +1,12 @@
 /*
  * SECCION DE OPCIONES
- * Aqui configuro como quiero que JavaCC genere mi parser
  */
 options {
-  STATIC = false;           // Permite crear multiples instancias del parser
-                           // Si fuera true, todos los metodos serian estaticos
+  STATIC = false;
 }
 
 /*
  * SECCION PARSER_BEGIN 
- * Aqui defino la clase Java que JavaCC va a generar
- * El nombre debe ser exactamente "CobolCompiler" segun el enunciado
  */
 PARSER_BEGIN(CobolCompiler)
 
@@ -18,34 +14,17 @@ import java.io.*;
 
 public class CobolCompiler {
 
-  /*
-   * VARIABLES PARA GENERACION DE CODIGO INTERMEDIO
-   * Segun el enunciado debo generar codigo de maquina de pila abstracta
-   * Como las instrucciones: mete, valord, asigna, add, sub, etc.
-   */
   java.util.List<String> codigo = new java.util.ArrayList<>();
-  int contadorEtiquetas = 0;  // Para generar etiquetas unicas (LBL0, LBL1, etc.)
+  int contadorEtiquetas = 0;
   
-  /* 
-   * Genera una etiqueta unica cada vez que la llamo
-   * Esto es importante para estructuras anidadas (bucles dentro de bucles)
-   */
   String nuevaEtiqueta() {
     return "LBL" + (contadorEtiquetas++);
   }
   
-  /*
-   * Añade una instruccion al codigo intermedio generado
-   * Por ejemplo: emitir("mete 5") añade mete 5 a la lista
-   */
   void emitir(String instruccion) {
     codigo.add(instruccion);
   }
   
-  /*
-   * Imprime todo el codigo intermedio generado
-   * Esto muestra el resultado de la "compilacion" a maquina de pila
-   */
   void mostrarCodigo() {
     System.out.println("=== Codigo intermedio generado ===");
     for (String inst : codigo) {
@@ -53,23 +32,15 @@ public class CobolCompiler {
     }
   }
 
-  /*
-   * FUNCION PRINCIPAL
-   * Segun el enunciado debe poder leer de:
-   * - Entrada estándar,teclado, si no hay argumentos
-   * - Archivo cuyo nombre se pase como parametro
-   */
   public static void main(String args[]) throws Exception {
-    InputStream entrada = System.in;  // Por defecto leo del teclado
+    InputStream entrada = System.in;
     
-    // Si me pasan un archivo como parametro, leo de ese archivo
     if (args.length > 0) {
       entrada = new FileInputStream(args[0]);
     }
     
-    // Creo mi analizador sintactico y empiezo a procesar
     CobolCompiler miParser = new CobolCompiler(entrada);
-    miParser.programa();  // Llamo a la regla principal de la gramatica
+    miParser.programa();
     System.out.println("¡El programa se analizo correctamente!");
   }
 }
@@ -77,190 +48,171 @@ public class CobolCompiler {
 PARSER_END(CobolCompiler)
 
 /*
- * SECCION DE TOKENS (ANALISIS LEXICO)
- * Aqui defino todos los simbolos que mi lenguaje reconoce
- * JavaCC primero convierte el texto de entrada en una secuencia de tokens
- * y luego el parser usa esos tokens para construir el arbol sintactico
+ * SECCION DE TOKENS
  */
 
-// TOKENS BASICOS - literales y identificadores
+// PALABRAS RESERVADAS
 TOKEN :
 {
-  // Numeros enteros positivos (segun enunciado solo estos)
-  <NUMERO: (["0"-"9"])+ >
-| 
-  // Cadenas con comillas dobles: "Hola 'mundo'"
-  <CADENA: "\"" (~["\"", "\n", "\r"])* "\"" >
-| 
-  // Identificadores: nombres de variables
-  // Pueden contener letras, digitos y guiones (pero no empezar con digito o guion)
-  // Ejemplos validos: VAR, WS-A, A12. Invalidos: 2B, -WS, WS-
-  <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9","-"])* >
-| 
-  // Signos de puntuacion basicos
-  <PUNTO: "." >
-| <COMA: "," >
-| <ABRE_PAREN: "(" >
-| <CIERRA_PAREN: ")" >
-}
-
-// PALABRAS RESERVADAS (KEYWORDS)
-// Estas tienen prioridad sobre los identificadores
-// JavaCC automaticamente hace que PROGRAMA no se confunda con un identificador
-TOKEN :
-{
-  // Estructura basica del programa
   <PROGRAMA: "PROGRAMA" >
 | <INICIO: "INICIO" >
 | <FIN: "FIN" >
-
-  // Instrucciones de entrada/salida
-| <MUESTRA: "MUESTRA" >  // Para imprimir
-| <LEE: "LEE" >          // Para leer del usuario
-
-  // Operaciones aritmeticas
-| <MUEVE: "MUEVE" >      // Asignacion simple
-| <A: "A" >              // Preposicion para MUEVE
+| <MUEVE: "MUEVE" >
+| <A: "A" >
+| <DE: "DE" >
+| <POR: "POR" >
+| <LEE: "LEE" >
+| <MUESTRA: "MUESTRA" >
 | <SUMA: "SUMA" >
 | <RESTA: "RESTA" >
-
-  // Estructuras de control
+| <MULTIPLICA: "MULTIPLICA" >
+| <DIVIDE: "DIVIDE" >
+| <DANDO: "DANDO" >
+| <CALCULA: "CALCULA" >
+| <FIN_CALCULA: "FIN-CALCULA" >
+| <COMO: "COMO" >
 | <SI: "SI" >
 | <ENTONCES: "ENTONCES" >
-| <FIN_SI: "FIN-SI" >
 | <SINO: "SINO" >
-
-  // Bucles
+| <FIN_SI: "FIN-SI" >
 | <EJECUTA: "EJECUTA" >
 | <FIN_EJECUTA: "FIN-EJECUTA" >
 | <HASTA_QUE: "HASTA-QUE" >
-
-  // Para condiciones
+| <VECES: "VECES" >
+| <USANDO: "USANDO" >
 | <ES: "ES" >
 | <IGUAL: "IGUAL" >
 | <MAYOR: "MAYOR" >
-| <MENOR: "MENOR" >        // Añadido MENOR para comparaciones
+| <MENOR: "MENOR" >
 | <QUE: "QUE" >
-
-  // Para expresiones
-| <CALCULA: "CALCULA" >
-| <FIN_CALCULA: "FIN-CALCULA" >
-| <IGUAL_ASIGN: "=" >     // Signo igual para asignaciones
-
-  // DANDO 
-| <DANDO: "DANDO" >       // Palabra clave para mostrar expresiones
 }
 
-/*
- * SECCION SKIP - caracteres que se ignoran
- * Esto es MUY IMPORTANTE: le digo a JavaCC que ignore estos caracteres
- * Es como el espacio en blanco que separa palabras pero no tiene significado
- */
+// TOKENS BASICOS
+TOKEN :
+{
+  <NUMERO: (["0"-"9"])+ >
+| <CADENA_DOBLE: "\"" (~["\"", "\n", "\r"])* "\"" >
+| <CADENA_SIMPLE: "'" (~["'", "\n", "\r"])* "'" >
+| <IDENTIFICADOR: (["A"-"Z"]) (["A"-"Z","0"-"9","-"])* >
+| <PUNTO: "." >
+| <COMA: "," >
+| <IGUAL_ASIGN: "=" >
+| <MAS: "+" >
+| <MENOS: "-" >
+| <POR_OP: "*" >
+| <DIV_OP: "/" >
+| <APAREN: "(" >
+| <CPAREN: ")" >
+}
+
 SKIP :
 {
-  " " | "\t" | "\n" | "\r"  // Espacios, tabulaciones y saltos de linea
-
-  /*
-   * COMENTARIOS DEL LENGUAJE (segun enunciado)
-   * El enunciado especifica 3 tipos de comentarios que debo manejar
-   */
-
-| // Tipo 1: Comentarios que empiezan con *> hasta fin de linea
-  <"*>" (~["\n", "\r"])* ("\n" | "\r")? >
-
-| // Tipo 2: Comentarios que empiezan con *| hasta fin de linea  
-  <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
-
-| // Tipo 3: Comentarios en columna 7 (herencia de tarjetas perforadas)
-  // Una linea que empiece por 6 espacios + asterisco es ignorada completamente
-  <"      *" (~["\n", "\r"])* ("\n" | "\r")? >
+  " " | "\t" | "\n" | "\r"
+| <"*>" (~["\n", "\r"])* ("\n" | "\r")? >
+| <"*|" (~["\n", "\r"])* ("\n" | "\r")? >
+| <"      *" (~["\n", "\r"])* ("\n" | "\r")? >
 }
 
 /*
- * SECCION DE GRAMATICA (ANALISIS SINTACTICO)
- * Aqui defino las reglas que determinan si el programa esta bien escrito
- * 
- * Cada regla es una función que JavaCC genera automaticamente
- * 
- * Los {} al principio son para variables locales (no las uso aqui)
- * Los {} al final contienen "acciones semanticas" codigo Java que se ejecuta
- * cuando se reconoce esa regla
+ * SECCION DE GRAMATICA
  */
 
-/*
- * REGLA PRINCIPAL - un programa completo
- * Estructura: PROGRAMA nombre. INICIO sentencias FIN.
- * Al final muestro todo el codigo intermedio que genere
- */
 void programa():
 {}
 {
-  <PROGRAMA> <IDENTIFICADOR> <PUNTO>
+  <PROGRAMA> (<IDENTIFICADOR> | <NUMERO>) <PUNTO>
   <INICIO>
-  (sentencia())*  // El * significa "cero o mas sentencias"
+  sentencias()
   <FIN> <PUNTO>
-  <EOF>  // Debe llegar hasta el final del archivo
+  <EOF>
   { 
-    System.out.println("Programa completo reconocido");
-    mostrarCodigo();  // Aqui muestro las instrucciones generadas
+    mostrarCodigo();
   }
 }
 
-// Una sentencia simple
+void sentencias():
+{}
+{
+  (sentencia())*
+}
+
 void sentencia():
 {}
 {
-  ( <MUESTRA> <CADENA> <PUNTO>
+  ( instruccionIO()
+  | instruccionAsignar()
+  | instruccionComparar()
+  | instruccionBucle()
+  )
+}
+
+void instruccionIO():
+{}
+{
+  ( <MUESTRA> listaLiterales() <PUNTO>
     {
-      emitir("metecad " + token.image);
-      emitir("print");
+      emitir("print " + getToken(0).image);
     }
   | <LEE> <IDENTIFICADOR> <PUNTO>
     {
-      emitir("lee " + token.image);
+      emitir("lee " + getToken(1).image);
     }
-  | <MUEVE> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+  )
+}
+
+void listaLiterales():
+{}
+{
+  literal() (<COMA> literal())*
+}
+
+void literal():
+{}
+{
+  ( <CADENA_DOBLE>
     {
-      emitir("mete " + getToken(1).image);
-      emitir("asigna " + token.image);
+      emitir("metecad " + token.image);
     }
-  | <SUMA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+  | <CADENA_SIMPLE>
+    {
+      emitir("metecad " + token.image);
+    }
+  | <IDENTIFICADOR>
     {
       emitir("valord " + token.image);
-      emitir("mete " + getToken(1).image);
+    }
+  | <NUMERO>
+    {
+      emitir("mete " + token.image);
+    }
+  )
+}
+
+void instruccionAsignar():
+{}
+{
+  ( <MUEVE> valor() <A> <IDENTIFICADOR> <PUNTO>
+    {
+      emitir("valori " + getToken(3).image);
+      emitir("swap");
+      emitir("asigna");
+    }
+  | <SUMA> valor() <A> <IDENTIFICADOR> <PUNTO>
+    {
+      emitir("valord " + getToken(3).image);
       emitir("add");
-      emitir("asigna " + token.image);
+      emitir("valori " + getToken(3).image);
+      emitir("swap");
+      emitir("asigna");
     }
-  | <RESTA> <NUMERO> <A> <IDENTIFICADOR> <PUNTO>
+  | <RESTA> valor() <A> <IDENTIFICADOR> <PUNTO>
     {
-      emitir("valord " + token.image);
-      emitir("mete " + getToken(1).image);
+      emitir("valord " + getToken(3).image);
+      emitir("swap");
       emitir("sub");
-      emitir("asigna " + token.image);
-    }
-  | <SI> <IDENTIFICADOR> <ENTONCES> (sentencia())* (<SINO> (sentencia())*)? <FIN_SI> <PUNTO>
-    {
-      String lblSino = nuevaEtiqueta();
-      String lblFin = nuevaEtiqueta();
-      emitir("valord " + getToken(1).image);
-      emitir("siciertovea " + lblSino);
-      // Sentencias del ENTONCES
-      emitir("vea " + lblFin);
-      emitir(lblSino + ":");
-      // Sentencias del SINO (si las hay)
-      emitir(lblFin + ":");
-    }
-  | <EJECUTA> (sentencia())* <FIN_EJECUTA> <HASTA_QUE> condicion() <PUNTO>
-    {
-      String lblInicio = nuevaEtiqueta();
-      String lblFin = nuevaEtiqueta();
-      emitir(lblInicio + ":");
-      // Las sentencias del bucle van aqui
-      // Aqui se evalua la condicion
-      emitir("not");
-      emitir("siciertovea " + lblFin);
-      emitir("vea " + lblInicio);
-      emitir(lblFin + ":");
+      emitir("valori " + getToken(3).image);
+      emitir("swap");
+      emitir("asigna");
     }
   | <CALCULA> <IDENTIFICADOR> <IGUAL_ASIGN> expresion() <FIN_CALCULA> <PUNTO>
     {
@@ -268,60 +220,118 @@ void sentencia():
       emitir("swap");
       emitir("asigna");
     }
-  | <DANDO> expresion() <PUNTO>
-    {
-      // DANDO lo utilizo cuando quiero sacar por pantalla el valor calculado
-      // de una expresion numerica (lo uso bastante en las pruebas que suman y restan)
-      // La expresion deja su resultado en la pila, asi que basta con imprimirla
-      emitir("print");
-    }
   )
 }
 
-// Expresion aritmetica simple - ahora acepta numeros Y variables
-void expresion():
+void listaValores():
+{}
+{
+  valor() valor()
+}
+
+void valor():
 {}
 {
   ( <NUMERO>
     {
-      // Si es un numero, lo meto directamente en la pila
       emitir("mete " + token.image);
     }
   | <IDENTIFICADOR>
     {
-      // Si es una variable, cargo su valor en la pila
-      // valord es la instruccion que defini para "valor de la variable"
       emitir("valord " + token.image);
     }
   )
 }
 
-// Condicion - ahora con mas tipos de comparacion
+void expresion():
+{}
+{
+  termino() (<MAS> termino() { emitir("add"); } | <MENOS> termino() { emitir("sub"); })*
+}
+
+void termino():
+{}
+{
+  factor() (<POR_OP> factor() { emitir("mul"); } | <DIV_OP> factor() { emitir("div"); })*
+}
+
+void factor():
+{}
+{
+  ( <NUMERO>
+    {
+      emitir("mete " + token.image);
+    }
+  | <IDENTIFICADOR>
+    {
+      emitir("valord " + token.image);
+    }
+  | <APAREN> expresion() <CPAREN>
+  )
+}
+
+void instruccionComparar():
+{}
+{
+  <SI> condicion()
+  <ENTONCES>
+    {
+      String lblSino = nuevaEtiqueta();
+      String lblFin = nuevaEtiqueta();
+      emitir("sifalsovea " + lblSino);
+    }
+  sentencias()
+  ( <SINO>
+    {
+      emitir("vea " + lblFin);
+      emitir(lblSino + ":");
+    }
+    sentencias()
+  )?
+    {
+      if (lblFin != null) emitir(lblFin + ":");
+      else emitir(lblSino + ":");
+    }
+  <FIN_SI> <PUNTO>
+}
+
+void instruccionBucle():
+{}
+{
+  <EJECUTA>
+    {
+      String lblInicio = nuevaEtiqueta();
+      String lblFin = nuevaEtiqueta();
+      emitir(lblInicio + ":");
+    }
+  sentencias()
+  <FIN_EJECUTA>
+  <HASTA_QUE> condicion() <PUNTO>
+    {
+      emitir("not");
+      emitir("siciertovea " + lblFin);
+      emitir("vea " + lblInicio);
+      emitir(lblFin + ":");
+    }
+}
+
 void condicion():
 {}
 {
-  ( <IDENTIFICADOR> <ES> <IGUAL> <A> expresion()
+  expresion()
+  <ES>
+  ( <IGUAL> <A> expresion()
     {
-      // Compara si variable es igual a expresion
-      // Ya tengo el valor de la expresion en la pila
-      emitir("valord " + getToken(0).image);
-      emitir("swap");  // Intercambio para tener orden correcto
-      emitir("xor");   // XOR da 0 si son iguales (verdadero)
+      emitir("xor");
     }
-  | <IDENTIFICADOR> <ES> <MAYOR> <QUE> expresion()
+  | <MAYOR> <QUE> expresion()
     {
-      // Compara si variable es mayor que expresion
-      // En la maquina de pila uso gt (greater than)
-      emitir("valord " + getToken(0).image);
       emitir("swap");
-      emitir("gt");    // "gt" = greater than (mayor que)
+      emitir("sub");
     }
-  | <IDENTIFICADOR> <ES> <MENOR> <QUE> expresion()
+  | <MENOR> <QUE> expresion()
     {
-      // Compara si variable es menor que expresion
-      emitir("valord " + getToken(0).image);
-      emitir("swap");
-      emitir("lt");    // "lt" = less than (menor que)
+      emitir("sub");
     }
   )
 }

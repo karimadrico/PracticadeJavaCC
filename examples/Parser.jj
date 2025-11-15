@@ -93,7 +93,7 @@ TOKEN :
   <NUMERO: (["0"-"9"])+ >
 | <CADENA_DOBLE: "\"" (~["\"", "\n", "\r"])* "\"" >
 | <CADENA_SIMPLE: "'" (~["'", "\n", "\r"])* "'" >
-| <IDENTIFICADOR: (["A"-"Z"]) (["A"-"Z","0"-"9","-"])* >
+| <IDENTIFICADOR: (["A"-"Z","a"-"z"]) (["A"-"Z","a"-"z","0"-"9","-"])* >
 | <PUNTO: "." >
 | <COMA: "," >
 | <IGUAL_ASIGN: "=" >
@@ -156,6 +156,11 @@ void instruccionIO():
   | <LEE> <IDENTIFICADOR> <PUNTO>
     {
       emitir("lee " + getToken(1).image);
+    }
+  | <DANDO> <IDENTIFICADOR> <PUNTO>
+    {
+      emitir("valord " + getToken(1).image);
+      emitir("print " + getToken(1).image);
     }
   )
 }
